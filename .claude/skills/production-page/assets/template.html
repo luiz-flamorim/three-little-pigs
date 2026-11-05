@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<meta name="description" content="{{SUMMARY_PLAIN}}">
+<style>
+  :root { --ink: #141b26; --soft: #5b6472; --line: #e4e5e7; --paper: #ffffff; --page: #f9f9f8; --tint: #ffffff; --mono: "Courier New", Courier, "Nimbus Mono PS", "Liberation Mono", monospace; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { margin: 0; background: var(--page); color: var(--ink); font: 1rem/1.65 var(--mono); }
+  main { max-width: 70rem; margin: 0 auto; padding: 6.5rem 1.75rem 5rem; }
+
+  /* header */
+  header { margin-bottom: 0.875rem; text-align: center; }
+  .kicker .date { white-space: nowrap; }
+  .kicker { font-size: 0.8125rem; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); margin: 0 0 0.625rem; }
+  h1 { font-size: 2.5rem; line-height: 1.15; margin: 0 0 1.125rem; font-weight: 700; letter-spacing: -.02em; }
+  .summary { font-size: 1.0625rem; color: var(--soft); max-width: 47.5rem; margin: 0 auto; }
+
+  /* the menu: sticks to the top, buttons of equal width, centred */
+  .menu { position: sticky; top: 0; z-index: 10; background: var(--page); margin: 0 -1.75rem; padding: 0.875rem 1.75rem; border-bottom: 0.0625rem solid transparent; transition: border-color .2s, box-shadow .2s; }
+  .menu.stuck { border-bottom-color: var(--line); box-shadow: 0 0.375rem 1rem -0.75rem rgba(20, 27, 38, .25); }
+  .buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.625rem; }
+  .button { flex: 0 0 10.5rem; padding: 0.625rem 0.75rem; border: 0.0938rem solid var(--ink); border-radius: 62.4375rem; color: var(--ink); text-decoration: none; font-size: 0.875rem; font-weight: 700; text-align: center; white-space: nowrap; background: var(--paper); }
+  .button.primary { background: var(--ink); color: var(--paper); }
+  .button { transition: background-color .2s, color .2s; }
+  .button:hover { opacity: .8; }
+  .menu .button.active { background: var(--ink); color: var(--paper); opacity: 1; }
+  section, header { scroll-margin-top: 6rem; }
+
+  /* sections */
+  section { border-top: 0.0625rem solid var(--line); padding: 2.25rem 0 0.5rem; }
+  h2 { font-size: 0.8125rem; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); margin: 0 0 1.25rem; font-weight: 600; }
+  .intro { font-style: italic; color: var(--soft); max-width: 46rem; margin: -0.25rem 0 1.75rem; }
+  .share { max-width: 46rem; margin: -0.75rem 0 1.5rem; padding: 0.875rem 1.125rem; background: var(--paper); border: 0.0625rem solid var(--line); border-radius: 0.375rem; }
+  .share a { color: var(--ink); font-weight: 700; }
+  .note { color: var(--soft); font-size: 0.9375rem; margin: -0.5rem 0 1rem; }
+  .empty { color: var(--soft); font-style: italic; }
+  .story p { margin: 0 0 0.75rem; max-width: 47.5rem; }
+  .who { display: inline-block; min-width: 8rem; font-size: 0.8125rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+  .screenplay h3 { font-size: 1rem; margin: 1.375rem 0 0.375rem; }
+  .screenplay ul { margin: 0; padding-left: 1.125rem; max-width: 51.25rem; }
+  .screenplay li { margin: 0.125rem 0; }
+  .screenplay b { font-weight: 600; }
+  .panels { display: flex; flex-wrap: wrap; gap: 0.875rem; }
+  .panels a { flex: 1 1 12.5rem; max-width: 16.25rem; display: block; border: 0.0625rem solid var(--line); border-radius: 0.375rem; padding: 0.5rem; text-decoration: none; color: var(--soft); font-size: 0.8125rem; background: var(--tint); }
+  .panels img { display: block; width: 100%; height: 8.75rem; object-fit: contain; background: var(--paper); border-radius: 0.1875rem; margin-bottom: 0.375rem; }
+  .comic { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0.0625rem solid var(--line); border-radius: 0.375rem; background: var(--paper); }
+  .open-comic { margin-top: 0.875rem; display: flex; justify-content: center; }
+  .open-comic .button { flex-basis: 15rem; }
+
+  /* all files, as a folder tree */
+  .tree, .tree ul { list-style: none; margin: 0; padding: 0; }
+  .tree ul { margin-left: 0.5625rem; padding-left: 1.125rem; border-left: 0.0625rem solid var(--line); }
+  .tree li { margin: 0; }
+  .file, .tree summary { display: flex; justify-content: space-between; gap: 1rem; padding: 0.4375rem 0; border-bottom: 0.0625rem solid var(--line); }
+  .file a { color: var(--ink); text-decoration: none; }
+  .file a:hover { text-decoration: underline; }
+  .file span, .tree summary span { color: var(--soft); font-size: 0.875rem; }
+  .tree summary { cursor: pointer; list-style: none; font-weight: 600; }
+  .tree summary::-webkit-details-marker { display: none; }
+  .tree summary b::before { content: "▸"; display: inline-block; width: 1.125rem; color: var(--soft); transition: transform .15s; }
+  .tree details[open] > summary b::before { transform: rotate(90deg); }
+  .file a::before { content: ""; display: inline-block; width: 1.125rem; }
+
+  /* back to top */
+  .to-top { position: fixed; right: 1.5rem; bottom: 1.5rem; width: 2.75rem; height: 2.75rem; border-radius: 50%; border: 0.0938rem solid var(--ink); background: var(--paper); color: var(--ink); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.25rem; line-height: 1; box-shadow: 0 0.125rem 0.625rem rgba(20, 27, 38, .12); opacity: 0; pointer-events: none; transform: translateY(0.5rem); transition: opacity .2s, transform .2s; }
+  .to-top.show { opacity: 1; pointer-events: auto; transform: none; }
+  .to-top:hover { background: var(--ink); color: var(--paper); }
+
+  footer { margin-top: 3rem; color: var(--soft); font-size: 0.8125rem; text-align: center; }
+
+  /* phones: two buttons per row, smaller title */
+  @media (max-width: 37.5rem) {
+    /* 15% margin on each side of the screen */
+    main { padding: 4rem 15% 4rem; }
+    /* the menu still spans the full screen: percentages here are of the content width (70% of the screen), so 15 / 0.7 = 21.4286% */
+    .menu { margin: 0 -21.4286%; padding: 0.625rem 21.4286%; }
+    h1 { font-size: 1.875rem; }
+    .summary { font-size: 0.9375rem; }
+    .button { flex: 0 0 calc(50% - 0.3125rem); font-size: 0.8125rem; padding: 0.5625rem 0.375rem; }
+    .who { display: block; min-width: 0; }
+    .panels a { flex-basis: calc(50% - 0.875rem); }
+    .panels img { height: 6.875rem; }
+    .to-top { right: 1rem; bottom: 1rem; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header id="top">
+    <p class="kicker">{{KICKER}}</p>
+    <h1>{{TITLE}}</h1>
+    <p class="summary">{{SUMMARY}}</p>
+  </header>
+
+  <nav class="menu" aria-label="Production"><div class="buttons">{{BUTTONS}}</div></nav>
+
+  <section id="story">
+    <h2>The story</h2>
+    <p class="intro">Step one: the story. It is improvised like a tabletop role-playing game. A Storyteller sets the scene and quietly runs the rounds, while the three pigs and the Wolf each play their own part, one short turn at a time, always going along with whatever the others bring in. After every turn a real die is rolled. On an unlucky roll, chaos strikes: something from another tale bursts in, and the story can swerve somewhere nobody planned. It always ends on a cliffhanger, ready for the next chapter.</p>
+    <div class="story">{{STORY}}</div>
+  </section>
+
+  <section id="screenplay">
+    <h2>The screenplay</h2>
+    <p class="intro">Step two: the screenplay. A story written to be read is not yet ready to be seen. A screenwriter reads it like a film director planning shots: it breaks the action into panels, adds the moments in between and the close-ups that make it clear, adds big sound words, and trims the text to the bare minimum. It saves the most dramatic shot for the very end.</p>
+    {{SCREENPLAY}}
+  </section>
+
+  <section id="panels">
+    <h2>The panels</h2>
+    <p class="intro">Step three: the panels. Each panel is drawn in code, in one fixed style: a single dark ink, thick outlines and thin details, shapes built from circles, arcs and straight lines, with real perspective. The characters are reusable puppets, so they look the same in every panel. Here is every panel on its own.</p>
+    {{PANELS}}
+  </section>
+
+  <section id="comic">
+    <h2>The comic</h2>
+    <p class="intro">Step four: the comic. The panels are laid out on one widescreen page, in rectangles, squares and slanted shapes, arranged so the page reads naturally from left to right and top to bottom. The words are lettered in, and the whole page is saved as a single file you can open anywhere.</p>
+    {{COMIC}}
+  </section>
+
+  <section id="files">
+    <h2>All files</h2>
+    <p class="intro">Everything this production made, kept together in one folder. Open any file, or download it to keep.</p>
+    {{FILES}}
+  </section>
+
+  <footer>Made with 3 Little Pigs — A, a story machine built with Claude Code. Shared under MIT and CC BY 4.0: credit the project if you reuse it.</footer>
+</main>
+<a class="to-top" href="#top" aria-label="Back to top" title="Back to top">↑</a>
+<script>
+  const toTop = document.querySelector(".to-top");
+  const menu = document.querySelector(".menu");
+  const links = [...menu.querySelectorAll('a[href^="#"]')];
+  const sections = links.map(a => document.querySelector(a.getAttribute("href"))).filter(Boolean);
+  let jumpingTo = null, jumpTimer = null;
+
+  // highlight one button: the section being read, or the one the reader just jumped to
+  const highlight = id => links.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + id));
+
+  // the section being read is the last one whose top has passed just below the menu;
+  // at the very bottom of the page, the last section wins even if it is short
+  const current = () => {
+    const line = menu.offsetHeight + 40;
+    let id = null;
+    for (const s of sections) if (s.getBoundingClientRect().top <= line) id = s.id;
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) id = sections[sections.length - 1].id;
+    return id;
+  };
+
+  const onScroll = () => {
+    toTop.classList.toggle("show", window.scrollY > 400);
+    menu.classList.toggle("stuck", menu.getBoundingClientRect().top <= 0 && window.scrollY > 0);
+    // while a jump is gliding past other sections, keep the clicked button lit
+    if (jumpingTo) {
+      clearTimeout(jumpTimer);
+      jumpTimer = setTimeout(() => { jumpingTo = null; highlight(current()); }, 150);
+      return;
+    }
+    highlight(current());
+  };
+
+  links.forEach(a => a.addEventListener("click", () => { jumpingTo = a.getAttribute("href").slice(1); highlight(jumpingTo); }));
+  toTop.addEventListener("click", () => { jumpingTo = "top"; highlight(null); });
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+</script>
+</body>
+</html>

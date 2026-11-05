@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Three Pigs and the Magic Bean</title>
+<meta name="description" content="Three pigs built houses of hay, sticks and bricks. Straw Pig threw a magic bean at the wolf, and a giant beanstalk grew. The wolf climbed it, Straw ran to the brick house, and now the wolf sees Sticks Pig all alone.">
+<style>
+  :root { --ink: #141b26; --soft: #5b6472; --line: #e4e5e7; --paper: #ffffff; --page: #f9f9f8; --tint: #ffffff; --mono: "Courier New", Courier, "Nimbus Mono PS", "Liberation Mono", monospace; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { margin: 0; background: var(--page); color: var(--ink); font: 1rem/1.65 var(--mono); }
+  main { max-width: 70rem; margin: 0 auto; padding: 6.5rem 1.75rem 5rem; }
+
+  /* header */
+  header { margin-bottom: 0.875rem; text-align: center; }
+  .kicker .date { white-space: nowrap; }
+  .kicker { font-size: 0.8125rem; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); margin: 0 0 0.625rem; }
+  h1 { font-size: 2.5rem; line-height: 1.15; margin: 0 0 1.125rem; font-weight: 700; letter-spacing: -.02em; }
+  .summary { font-size: 1.0625rem; color: var(--soft); max-width: 47.5rem; margin: 0 auto; }
+
+  /* the menu: sticks to the top, buttons of equal width, centred */
+  .menu { position: sticky; top: 0; z-index: 10; background: var(--page); margin: 0 -1.75rem; padding: 0.875rem 1.75rem; border-bottom: 0.0625rem solid transparent; transition: border-color .2s, box-shadow .2s; }
+  .menu.stuck { border-bottom-color: var(--line); box-shadow: 0 0.375rem 1rem -0.75rem rgba(20, 27, 38, .25); }
+  .buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.625rem; }
+  .button { flex: 0 0 10.5rem; padding: 0.625rem 0.75rem; border: 0.0938rem solid var(--ink); border-radius: 62.4375rem; color: var(--ink); text-decoration: none; font-size: 0.875rem; font-weight: 700; text-align: center; white-space: nowrap; background: var(--paper); }
+  .button.primary { background: var(--ink); color: var(--paper); }
+  .button { transition: background-color .2s, color .2s; }
+  .button:hover { opacity: .8; }
+  .menu .button.active { background: var(--ink); color: var(--paper); opacity: 1; }
+  section, header { scroll-margin-top: 6rem; }
+
+  /* sections */
+  section { border-top: 0.0625rem solid var(--line); padding: 2.25rem 0 0.5rem; }
+  h2 { font-size: 0.8125rem; letter-spacing: .12em; text-transform: uppercase; color: var(--soft); margin: 0 0 1.25rem; font-weight: 600; }
+  .intro { font-style: italic; color: var(--soft); max-width: 46rem; margin: -0.25rem 0 1.75rem; }
+  .share { max-width: 46rem; margin: -0.75rem 0 1.5rem; padding: 0.875rem 1.125rem; background: var(--paper); border: 0.0625rem solid var(--line); border-radius: 0.375rem; }
+  .share a { color: var(--ink); font-weight: 700; }
+  .note { color: var(--soft); font-size: 0.9375rem; margin: -0.5rem 0 1rem; }
+  .empty { color: var(--soft); font-style: italic; }
+  .story p { margin: 0 0 0.75rem; max-width: 47.5rem; }
+  .who { display: inline-block; min-width: 8rem; font-size: 0.8125rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+  .screenplay h3 { font-size: 1rem; margin: 1.375rem 0 0.375rem; }
+  .screenplay ul { margin: 0; padding-left: 1.125rem; max-width: 51.25rem; }
+  .screenplay li { margin: 0.125rem 0; }
+  .screenplay b { font-weight: 600; }
+  .panels { display: flex; flex-wrap: wrap; gap: 0.875rem; }
+  .panels a { flex: 1 1 12.5rem; max-width: 16.25rem; display: block; border: 0.0625rem solid var(--line); border-radius: 0.375rem; padding: 0.5rem; text-decoration: none; color: var(--soft); font-size: 0.8125rem; background: var(--tint); }
+  .panels img { display: block; width: 100%; height: 8.75rem; object-fit: contain; background: var(--paper); border-radius: 0.1875rem; margin-bottom: 0.375rem; }
+  .comic { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0.0625rem solid var(--line); border-radius: 0.375rem; background: var(--paper); }
+  .open-comic { margin-top: 0.875rem; display: flex; justify-content: center; }
+  .open-comic .button { flex-basis: 15rem; }
+
+  /* all files, as a folder tree */
+  .tree, .tree ul { list-style: none; margin: 0; padding: 0; }
+  .tree ul { margin-left: 0.5625rem; padding-left: 1.125rem; border-left: 0.0625rem solid var(--line); }
+  .tree li { margin: 0; }
+  .file, .tree summary { display: flex; justify-content: space-between; gap: 1rem; padding: 0.4375rem 0; border-bottom: 0.0625rem solid var(--line); }
+  .file a { color: var(--ink); text-decoration: none; }
+  .file a:hover { text-decoration: underline; }
+  .file span, .tree summary span { color: var(--soft); font-size: 0.875rem; }
+  .tree summary { cursor: pointer; list-style: none; font-weight: 600; }
+  .tree summary::-webkit-details-marker { display: none; }
+  .tree summary b::before { content: "▸"; display: inline-block; width: 1.125rem; color: var(--soft); transition: transform .15s; }
+  .tree details[open] > summary b::before { transform: rotate(90deg); }
+  .file a::before { content: ""; display: inline-block; width: 1.125rem; }
+
+  /* back to top */
+  .to-top { position: fixed; right: 1.5rem; bottom: 1.5rem; width: 2.75rem; height: 2.75rem; border-radius: 50%; border: 0.0938rem solid var(--ink); background: var(--paper); color: var(--ink); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.25rem; line-height: 1; box-shadow: 0 0.125rem 0.625rem rgba(20, 27, 38, .12); opacity: 0; pointer-events: none; transform: translateY(0.5rem); transition: opacity .2s, transform .2s; }
+  .to-top.show { opacity: 1; pointer-events: auto; transform: none; }
+  .to-top:hover { background: var(--ink); color: var(--paper); }
+
+  footer { margin-top: 3rem; color: var(--soft); font-size: 0.8125rem; text-align: center; }
+
+  /* phones: two buttons per row, smaller title */
+  @media (max-width: 37.5rem) {
+    /* 15% margin on each side of the screen */
+    main { padding: 4rem 15% 4rem; }
+    /* the menu still spans the full screen: percentages here are of the content width (70% of the screen), so 15 / 0.7 = 21.4286% */
+    .menu { margin: 0 -21.4286%; padding: 0.625rem 21.4286%; }
+    h1 { font-size: 1.875rem; }
+    .summary { font-size: 0.9375rem; }
+    .button { flex: 0 0 calc(50% - 0.3125rem); font-size: 0.8125rem; padding: 0.5625rem 0.375rem; }
+    .who { display: block; min-width: 0; }
+    .panels a { flex-basis: calc(50% - 0.875rem); }
+    .panels img { height: 6.875rem; }
+    .to-top { right: 1rem; bottom: 1rem; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header id="top">
+    <p class="kicker">The Three Little Pigs <span class="date">· 2026-10-23</span></p>
+    <h1>The Three Pigs and the Magic Bean</h1>
+    <p class="summary">Three pigs built houses of hay, sticks and bricks. Straw Pig threw a magic bean at the wolf, and a giant beanstalk grew. The wolf climbed it, Straw ran to the brick house, and now the wolf sees Sticks Pig all alone.</p>
+  </header>
+
+  <nav class="menu" aria-label="Production"><div class="buttons"><a class="button" href="#story">The story</a><a class="button" href="#screenplay">The screenplay</a><a class="button" href="#panels">The panels</a><a class="button" href="#comic">The comic</a><a class="button" href="#files">All files</a></div></nav>
+
+  <section id="story">
+    <h2>The story</h2>
+    <p class="intro">Step one: the story. It is improvised like a tabletop role-playing game. A Storyteller sets the scene and quietly runs the rounds, while the three pigs and the Wolf each play their own part, one short turn at a time, always going along with whatever the others bring in. After every turn a real die is rolled. On an unlucky roll, chaos strikes: something from another tale bursts in, and the story can swerve somewhere nobody planned. It always ends on a cliffhanger, ready for the next chapter.</p>
+    <div class="story"><p><span class="who">Storyteller</span> Once upon a time, three little pigs left home with big dreams, small bags, and a hungry wolf watching from the trees.</p><p><span class="who">Straw Pig</span> <em>Stacks hay in a big heap and flops on top.</em> Done! Best house ever, and it only took five minutes!</p><p><span class="who">Sticks Pig</span> <em>Ties a few sticks together with string, then looks at the trees.</em> Good enough! A wolf can&#x27;t blow through string… right?</p><p><span class="who">Bricks Pig</span> <em>Lays one brick, then another, then another.</em> Slow and steady, brothers. A wolf can blow on hay, but not on bricks!</p><p><span class="who">Storyteller</span> But in the trees, a pair of yellow eyes was watching the hay house, and a big tummy began to growl...</p><p><span class="who">Wolf</span> <em>Licks lips and creeps up to the hay house.</em> Little pig, little pig, your house smells like lunch! Let me in!</p><p><span class="who">Straw Pig</span> <em>Tosses Jack&#x27;s magic bean out the window.</em> Not by the hair of my chinny-chin-chin! Go climb that, Wolfy!</p><p><span class="who">Storyteller</span> The bean hit the ground and, WHOOSH, a giant green beanstalk shot up right next to the hay house, all the way to the clouds!</p><p><span class="who">Wolf</span> <em>Climbs the beanstalk, grinning.</em> Thanks, piggy! Now I can jump down right on top of your hay roof!</p><p><span class="who">Straw Pig</span> <em>Squeals and bolts out the door.</em> Oh no, oh no! Brother Bricks, open up, the wolf is coming down from the sky!</p><p><span class="who">Bricks Pig</span> <em>Pulls Straw in and slams the brick door.</em> Jump all you like, Wolfy! Bricks don&#x27;t care how high you climb!</p><p><span class="who">Storyteller</span> The pigs cheered. But up on the beanstalk, the wolf smiled. He could see the stick house, and Sticks Pig was all alone...</p></div>
+  </section>
+
+  <section id="screenplay">
+    <h2>The screenplay</h2>
+    <p class="intro">Step two: the screenplay. A story written to be read is not yet ready to be seen. A screenwriter reads it like a film director planning shots: it breaks the action into panels, adds the moments in between and the close-ups that make it clear, adds big sound words, and trims the text to the bare minimum. It saves the most dramatic shot for the very end.</p>
+    <p class="note">12 panels, planned by the screenwriter.</p><div class="screenplay"><h3>Panel 1 — big</h3>
+<ul>
+<li><b>Story parts:</b> 1</li>
+<li><b>Camera:</b> wide shot, eye level, a path leading into the distance (one-point perspective).</li>
+<li><b>Scene:</b> Outside, on a sunny path through a meadow. The three pigs walk side by side toward the right, each with a small bag on a stick over the shoulder (new prop: a small bag on a stick), all `happy`, Straw in front, Sticks in the middle, Bricks last. At the left edge, trees, and deep in the dark between the leaves a pair of eyes watching them (just two eyes, no Wolf body yet).</li>
+<li><b>Caption:</b> &quot;Once upon a time, three little pigs left home with big dreams...&quot;</li>
+</ul>
+<h3>Panel 2 — square</h3>
+<ul>
+<li><b>Story parts:</b> 2</li>
+<li><b>Camera:</b> medium shot, eye level.</li>
+<li><b>Scene:</b> Outside, in a clearing on the left side of the meadow. A big heap of hay (`haystack`) with a little door and one window on its front. The Straw Pig lies on top of the heap, flopped on his back, arms wide, `happy`. A few loose bits of hay fly up around him.</li>
+<li><b>Bubble (Straw Pig):</b> &quot;Done! Best house ever, and it took five minutes!&quot;</li>
+<li><b>Sound:</b> FLOMP!</li>
+</ul>
+<h3>Panel 3 — wide</h3>
+<ul>
+<li><b>Story parts:</b> 3, 4</li>
+<li><b>Camera:</b> wide shot, eye level, a little farther back.</li>
+<li><b>Scene:</b> Outside, further along the same path. On the left, farther back near the trees, the Sticks Pig ties a few sticks together with string (`build` pose with the stick bundle), glancing up at the trees, a little `scared`. On the right, in front, the Bricks Pig lays a brick on a low brick wall that is a few rows high (`build` pose with a brick), `determined`, turned toward his brothers as he speaks.</li>
+<li><b>Bubble (Sticks Pig):</b> &quot;Good enough!&quot;</li>
+<li><b>Bubble (Sticks Pig):</b> &quot;A wolf can&#x27;t blow through string… right?&quot;</li>
+<li><b>Bubble (Bricks Pig):</b> &quot;Slow and steady, brothers.&quot;</li>
+<li><b>Bubble (Bricks Pig):</b> &quot;A wolf can blow on hay, but not on bricks!&quot;</li>
+<li><b>Sound:</b> CLINK!</li>
+</ul>
+<h3>Panel 4 — small</h3>
+<ul>
+<li><b>Story parts:</b> 5</li>
+<li><b>Camera:</b> extreme close-up.</li>
+<li><b>Scene:</b> Inside the dark trees, only leaves and branches, and the Wolf&#x27;s eyes peering out between them, narrowed and hungry. Small wavy growl lines come from below the frame, where his tummy is.</li>
+<li><b>Caption:</b> &quot;In the trees, a pair of yellow eyes watched the hay house...&quot;</li>
+<li><b>Sound:</b> GRRRUMBLE...</li>
+</ul>
+<h3>Panel 5 — wide</h3>
+<ul>
+<li><b>Story parts:</b> 6</li>
+<li><b>Camera:</b> medium shot, eye level, from the side, the hay house on the right.</li>
+<li><b>Scene:</b> Outside the hay house. The Wolf has crept up to the little front door (`sneak` pose, `grin`), sniffing the air and licking his lips (tongue tip showing, new detail). The door is shut. The window beside the door is empty for now. The Straw Pig is inside and cannot be seen.</li>
+<li><b>Bubble (Wolf):</b> &quot;Little pig, little pig, your house smells like lunch!&quot;</li>
+<li><b>Bubble (Wolf):</b> &quot;Let me in!&quot;</li>
+<li><b>Sound:</b> SNIFF SNIFF</li>
+</ul>
+<h3>Panel 6 — square</h3>
+<ul>
+<li><b>Story parts:</b> 7</li>
+<li><b>Camera:</b> medium close-up on the hay house window, from outside, the back of the Wolf&#x27;s ear and shoulder in the near corner (over-the-shoulder).</li>
+<li><b>Scene:</b> The Straw Pig is inside his hay house, leaning out of the window, `teasing`, one arm swinging forward and flinging a small bean out of the window, over the Wolf&#x27;s head (new pose: throwing; new prop: one bean, Jack&#x27;s magic bean, drawn as a simple bean shape with a few sparkle lines). The Wolf stays outside at the door, still `grin`.</li>
+<li><b>Bubble (Straw Pig):</b> &quot;Not by the hair of my chinny-chin-chin!&quot;</li>
+<li><b>Bubble (Straw Pig):</b> &quot;Go climb that, Wolfy!&quot;</li>
+<li><b>Sound:</b> FLICK!</li>
+</ul>
+<h3>Panel 7 — small</h3>
+<ul>
+<li><b>Story parts:</b> 8 (first half)</li>
+<li><b>Camera:</b> extreme close-up, low, at ground level.</li>
+<li><b>Scene:</b> Outside, on the grass right next to the hay house wall. The bean lands in the soil with a little puff of dirt and short impact lines. Only grass, soil, the bottom of the hay wall and the bean.</li>
+<li><b>Caption:</b> &quot;The bean hit the ground and...&quot;</li>
+<li><b>Sound:</b> THUNK!</li>
+</ul>
+<h3>Panel 8 — tall</h3>
+<ul>
+<li><b>Story parts:</b> 8 (second half)</li>
+<li><b>Camera:</b> low angle, looking up.</li>
+<li><b>Scene:</b> Outside, beside the hay house. A giant beanstalk (`beanstalk`) shoots up out of the ground right next to the hay house, curling and leafy, past the top of the panel and into the clouds, with speed lines along it. At the bottom, the Wolf stands by the door, small against the stalk, leaning back and staring up in surprise (`stand` pose, mouth open).</li>
+<li><b>Caption:</b> &quot;...a giant green beanstalk shot up, all the way to the clouds!&quot;</li>
+<li><b>Sound:</b> WHOOSH!</li>
+</ul>
+<h3>Panel 9 — tall</h3>
+<ul>
+<li><b>Story parts:</b> 9</li>
+<li><b>Camera:</b> medium shot from the side, high up the beanstalk.</li>
+<li><b>Scene:</b> Outside, partway up the beanstalk. The Wolf climbs, gripping the stalk with his clawed hands and feet (new pose: climbing), turning his head to look down toward the hay roof far below, `grin`. Big leaves around him, one cloud nearby. The top of the round hay house is small at the bottom of the panel.</li>
+<li><b>Bubble (Wolf):</b> &quot;Thanks, piggy!&quot;</li>
+<li><b>Bubble (Wolf):</b> &quot;Now I can jump down right on top of your hay roof!&quot;</li>
+<li><b>Sound:</b> SCRITCH SCRATCH</li>
+</ul>
+<h3>Panel 10 — wide</h3>
+<ul>
+<li><b>Story parts:</b> 10</li>
+<li><b>Camera:</b> wide shot, eye level, the hay house on the left and the brick house on the right.</li>
+<li><b>Scene:</b> Outside, in the meadow. On the left, the beanstalk rises next to the hay house, and the Wolf is high up on it, still climbing, his back to us, not yet looking down. The hay house door bursts open and the Straw Pig bolts out, running right toward the finished brick house (`run` pose, `scared`), a few bits of hay and dust puffs behind him, sweat drops flying.</li>
+<li><b>Bubble (Straw Pig):</b> &quot;Oh no, oh no!&quot;</li>
+<li><b>Bubble (Straw Pig):</b> &quot;Brother Bricks, open up!&quot;</li>
+<li><b>Bubble (Straw Pig):</b> &quot;The wolf is coming down from the sky!&quot;</li>
+<li><b>Sound:</b> EEEEK!</li>
+</ul>
+<h3>Panel 11 — square</h3>
+<ul>
+<li><b>Story parts:</b> 11</li>
+<li><b>Camera:</b> medium shot, eye level, at the brick house door, from outside.</li>
+<li><b>Scene:</b> At the doorway of the brick house. The Bricks Pig stands just inside and pulls the Straw Pig in by the arm (new pose: pulling), `determined`, while his other hand swings the heavy door shut. The Straw Pig is half through the door, feet off the ground. Motion lines on the door.</li>
+<li><b>Bubble (Bricks Pig):</b> &quot;Jump all you like, Wolfy!&quot;</li>
+<li><b>Bubble (Bricks Pig):</b> &quot;Bricks don&#x27;t care how high you climb!&quot;</li>
+<li><b>Sound:</b> SLAM!</li>
+</ul>
+<h3>Panel 12 — big</h3>
+<ul>
+<li><b>Story parts:</b> 12</li>
+<li><b>Camera:</b> extreme close-up.</li>
+<li><b>Scene:</b> Only the Wolf&#x27;s face fills the panel, from the tip of his nose to his eye: a wide, slow, toothy smile (`toothy`), every tooth showing, two long fangs, one eye narrowed, looking toward the stick house we cannot see. Nothing else in the panel.</li>
+<li><b>Caption:</b> &quot;The pigs cheered. But up on the beanstalk, the wolf smiled. He could see the stick house, and Sticks Pig was all alone...&quot;</li>
+<li><b>Caption:</b> &quot;To be continued...&quot;</li>
+</ul></div>
+  </section>
+
+  <section id="panels">
+    <h2>The panels</h2>
+    <p class="intro">Step three: the panels. Each panel is drawn in code, in one fixed style: a single dark ink, thick outlines and thin details, shapes built from circles, arcs and straight lines, with real perspective. The characters are reusable puppets, so they look the same in every panel. Here is every panel on its own.</p>
+    <div class="panels"><a href="panels/panel-01.svg" target="_blank"><img src="panels/panel-01.svg" alt="Panel 1" loading="lazy">Panel 1</a><a href="panels/panel-02.svg" target="_blank"><img src="panels/panel-02.svg" alt="Panel 2" loading="lazy">Panel 2</a><a href="panels/panel-03.svg" target="_blank"><img src="panels/panel-03.svg" alt="Panel 3" loading="lazy">Panel 3</a><a href="panels/panel-04.svg" target="_blank"><img src="panels/panel-04.svg" alt="Panel 4" loading="lazy">Panel 4</a><a href="panels/panel-05.svg" target="_blank"><img src="panels/panel-05.svg" alt="Panel 5" loading="lazy">Panel 5</a><a href="panels/panel-06.svg" target="_blank"><img src="panels/panel-06.svg" alt="Panel 6" loading="lazy">Panel 6</a><a href="panels/panel-07.svg" target="_blank"><img src="panels/panel-07.svg" alt="Panel 7" loading="lazy">Panel 7</a><a href="panels/panel-08.svg" target="_blank"><img src="panels/panel-08.svg" alt="Panel 8" loading="lazy">Panel 8</a><a href="panels/panel-09.svg" target="_blank"><img src="panels/panel-09.svg" alt="Panel 9" loading="lazy">Panel 9</a><a href="panels/panel-10.svg" target="_blank"><img src="panels/panel-10.svg" alt="Panel 10" loading="lazy">Panel 10</a><a href="panels/panel-11.svg" target="_blank"><img src="panels/panel-11.svg" alt="Panel 11" loading="lazy">Panel 11</a><a href="panels/panel-12.svg" target="_blank"><img src="panels/panel-12.svg" alt="Panel 12" loading="lazy">Panel 12</a></div>
+  </section>
+
+  <section id="comic">
+    <h2>The comic</h2>
+    <p class="intro">Step four: the comic. The panels are laid out on one widescreen page, in rectangles, squares and slanted shapes, arranged so the page reads naturally from left to right and top to bottom. The words are lettered in, and the whole page is saved as a single file you can open anywhere.</p>
+    <iframe class="comic" src="comic.html" title="The comic"></iframe><p class="open-comic"><a class="button primary" href="comic.html">Open the comic on its own</a></p>
+  </section>
+
+  <section id="files">
+    <h2>All files</h2>
+    <p class="intro">Everything this production made, kept together in one folder. Open any file, or download it to keep.</p>
+    <p class="share">Want to share it? Send <a href="the-three-pigs-and-the-magic-bean.html">the-three-pigs-and-the-magic-bean.html</a> to your friends: it is a single file with the whole production inside, and it opens in any browser.</p><ul class="tree"><li class="file"><a href="comic.html">comic.html</a><span>280 KB</span></li><li class="file"><a href="screenplay.md">screenplay.md</a><span>6 KB</span></li><li class="file"><a href="story.md">story.md</a><span>2 KB</span></li><li class="file"><a href="the-three-pigs-and-the-magic-bean.html">the-three-pigs-and-the-magic-bean.html</a><span>1115 KB</span></li><li><details><summary><b>build/</b><span>1 file</span></summary><ul><li class="file"><a href="build/comic.py">comic.py</a><span>9 KB</span></li></ul></details></li><li><details><summary><b>panels/</b><span>12 files</span></summary><ul><li class="file"><a href="panels/panel-01.svg">panel-01.svg</a><span>38 KB</span></li><li class="file"><a href="panels/panel-02.svg">panel-02.svg</a><span>17 KB</span></li><li class="file"><a href="panels/panel-03.svg">panel-03.svg</a><span>31 KB</span></li><li class="file"><a href="panels/panel-04.svg">panel-04.svg</a><span>15 KB</span></li><li class="file"><a href="panels/panel-05.svg">panel-05.svg</a><span>21 KB</span></li><li class="file"><a href="panels/panel-06.svg">panel-06.svg</a><span>14 KB</span></li><li class="file"><a href="panels/panel-07.svg">panel-07.svg</a><span>5 KB</span></li><li class="file"><a href="panels/panel-08.svg">panel-08.svg</a><span>30 KB</span></li><li class="file"><a href="panels/panel-09.svg">panel-09.svg</a><span>31 KB</span></li><li class="file"><a href="panels/panel-10.svg">panel-10.svg</a><span>46 KB</span></li><li class="file"><a href="panels/panel-11.svg">panel-11.svg</a><span>29 KB</span></li><li class="file"><a href="panels/panel-12.svg">panel-12.svg</a><span>5 KB</span></li></ul></details></li></ul>
+  </section>
+
+  <footer>Made with 3 Little Pigs — A, a story machine built with Claude Code. Shared under MIT and CC BY 4.0: credit the project if you reuse it.</footer>
+</main>
+<a class="to-top" href="#top" aria-label="Back to top" title="Back to top">↑</a>
+<script>
+  const toTop = document.querySelector(".to-top");
+  const menu = document.querySelector(".menu");
+  const links = [...menu.querySelectorAll('a[href^="#"]')];
+  const sections = links.map(a => document.querySelector(a.getAttribute("href"))).filter(Boolean);
+  let jumpingTo = null, jumpTimer = null;
+
+  // highlight one button: the section being read, or the one the reader just jumped to
+  const highlight = id => links.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + id));
+
+  // the section being read is the last one whose top has passed just below the menu;
+  // at the very bottom of the page, the last section wins even if it is short
+  const current = () => {
+    const line = menu.offsetHeight + 40;
+    let id = null;
+    for (const s of sections) if (s.getBoundingClientRect().top <= line) id = s.id;
+    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) id = sections[sections.length - 1].id;
+    return id;
+  };
+
+  const onScroll = () => {
+    toTop.classList.toggle("show", window.scrollY > 400);
+    menu.classList.toggle("stuck", menu.getBoundingClientRect().top <= 0 && window.scrollY > 0);
+    // while a jump is gliding past other sections, keep the clicked button lit
+    if (jumpingTo) {
+      clearTimeout(jumpTimer);
+      jumpTimer = setTimeout(() => { jumpingTo = null; highlight(current()); }, 150);
+      return;
+    }
+    highlight(current());
+  };
+
+  links.forEach(a => a.addEventListener("click", () => { jumpingTo = a.getAttribute("href").slice(1); highlight(jumpingTo); }));
+  toTop.addEventListener("click", () => { jumpingTo = "top"; highlight(null); });
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+</script>
+</body>
+</html>

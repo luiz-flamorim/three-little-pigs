@@ -1,0 +1,6 @@
+tmp/
+.DS_Store
+__pycache__/
+.claude/chaos-used.md
+outputs/*
+!outputs/2026-10-23-3-pigs-and-the-magic-bean/
