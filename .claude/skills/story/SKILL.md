@@ -1,6 +1,6 @@
 ---
 name: story
-description: Run a new improvised Three Little Pigs story with the project's agent cast (Storyteller, Straw Pig, Sticks Pig, Bricks Pig, Wolf), acting as the game runner — calling each agent in turn, saving every part with turn.py, rolling chaos, and printing the story live. Use this skill whenever the user asks to start, tell, run, play or generate a story, a new chapter or a new episode in this project, even if they just say "let's go" or "another one".
+description: Run only the story step of the Three Little Pigs machine — the agent cast (Storyteller, Straw Pig, Sticks Pig, Bricks Pig, Wolf) improvises a new story, with the main session as game runner calling each agent, saving every part with turn.py, rolling chaos and printing the story live. Use it when the user asks for just the story, without the comic, or types /story; for "tell me a story" and the full production, use the tell-me-a-story skill, which runs this one first.
 ---
 
 **First rule:** never go outside this project folder (`3 Little Pigs - A`). Do not look at, read, copy, change or delete anything outside it. Put temporary files in `tmp/` and delete them when you are done. The rules in `.claude/story-rules.md` apply to every story.
@@ -62,4 +62,4 @@ Follow the Storyteller's `Next:` line. A player does one thing, then control goe
 - If part 11 is reached first, ask the Storyteller to close the story in part 12.
 - Then ask the Storyteller for the summary paragraph (start, middle, ending and cliffhanger, up to 255 characters) and save it with the speaker `Summary`.
 - Build the production page (the `production-page` skill) with `python3 .claude/skills/production-page/scripts/build_page.py <production folder>`: it creates `index.html`, which shows the story and will show the comic once `/comic` has run. On macOS, open it for the user with `open`.
-- Tell the user the story is finished, where its production folder is, and that `/comic` will turn it into a comic. If anything went wrong during the run (an agent broke a rule, a turn had to be shortened twice, the ending had to be forced), mention it briefly: it may be worth a journal entry.
+- If this run is part of `/tell-me-a-story`, go straight on to the comic. Otherwise, tell the user the story is finished, where its production folder is, and that `/comic` will turn it into a comic. If anything went wrong during the run (an agent broke a rule, a turn had to be shortened twice, the ending had to be forced), mention it briefly: it may be worth a journal entry.

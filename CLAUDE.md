@@ -22,7 +22,7 @@ The characters are agents, but agents alone are not always the right tool. Whene
 
 - `CLAUDE.md` (this file) — for the main session: how to work on and run the project. Subagents never see it.
 - `.claude/story-rules.md` — the rules of the story world. Every story agent reads it on its first turn; it is also imported below for the game runner.
-- `.claude/JOURNAL.md` — the author's log of design decisions, kept as project history. Story agents do not read it.
+- **Records** — `.claude/JOURNAL.md` (the log of design decisions) and `.claude/chaos-used.md` (the chaos elements already used) only grow, so nothing loads them by default, to save time and tokens. Read the journal only when you need the history behind a decision, and then only the part you need (search it, or read the latest entries). Only `turn.py` reads the chaos record; agents never do.
 - `.claude/agents/` — one file per agent persona. `.claude/skills/` — the project skills. `.claude/tools/turn.py` — the story runner's helper.
 - `outputs/` — one folder per production. `links/` — images used by `README.md`.
 
@@ -44,19 +44,19 @@ All three pigs share the same actions: run from the wolf when outside, try to bu
 
 Repeatable procedures live as project skills in `.claude/skills/`, so anyone who clones the repo gets them.
 
-- **story** (`.claude/skills/story/`) — runs a new story: the main session becomes the game runner, starts with the `storyteller` agent, calls the cast in turn, saves every part with `.claude/tools/turn.py`, rolls chaos, and prints the story live. Use it whenever the user asks to start or tell a story (or types `/story`). The full step-by-step procedure is in its `SKILL.md`.
+- **tell-me-a-story** (`.claude/skills/tell-me-a-story/`) — the one command for users: runs the `story` skill, then the `comic` skill, then opens the production page and explains how to share it. Use it whenever the user asks for a story ("tell me a story", or `/tell-me-a-story`), unless they ask for only one step.
+- **story** (`.claude/skills/story/`) — runs a new story: the main session becomes the game runner, starts with the `storyteller` agent, calls the cast in turn, saves every part with `.claude/tools/turn.py`, rolls chaos, and prints the story live. Use it alone when the user wants only the story (or types `/story`). The full step-by-step procedure is in its `SKILL.md`.
 - **comic** (`.claude/skills/comic/`) — turns a finished story into a one-page widescreen comic, straight through with no review stop: the `screenwriter` agent writes the panel script, the page is drawn with `monoline-art`, checked for reading order, and published as a self-contained HTML file in the story's production folder, whose page is then rebuilt. Use it whenever the user asks for a comic (or types `/comic`).
 - **production-page** (`.claude/skills/production-page/`) — builds each production's `index.html` from one shared template: the page that presents a production's story, screenplay, panels, comic and files, with the design agreed with the user. `/story` and `/comic` use it; it can also make a self-sufficient single-file page to share a production. It holds the template and a finished example.
 - **monoline-art** (`.claude/skills/monoline-art/`) — the approved comic art style: one dark navy line of a single, adjustable weight, built from geometry, with one-point perspective and no crossing lines. Use it for any drawing for the comic. It holds the rules, the drawing toolkit (`scripts/mono.py`), and the approved reference panel.
 
 ## Conventions
 
+- **Keep texts short.** Anything written for readers of the repo (README, page copy, docs) stays short: bullet lists over long paragraphs, one or two sentences per point.
 - **Markdown is human readable.** Every `.md` file is written in complete, continuous strings per paragraph, with no mid-paragraph hard line breaks; let lines soft-wrap in the editor. Paragraphs, headings and list items are still separated by blank lines as normal Markdown.
 - **Agent and skill files.** Subagents do not inherit this file, so every agent file and skill must open with the project boundary rule, and every story agent must be told to read `.claude/story-rules.md` on its first turn. Write agent files in short, simple language.
-- **Record decisions.** When a meaningful decision is made (a new rule, agent, mechanic, skill or scope change), record it in `.claude/JOURNAL.md` in the journal-keeper's format, and keep `README.md`, `.claude/story-rules.md` and this file in sync with the change.
+- **Record decisions.** When a meaningful decision is made (a new rule, agent, mechanic, skill or scope change), append a short entry (one or two sentences) to `.claude/JOURNAL.md` in the journal-keeper's format, without reading the whole file, and keep `README.md`, `.claude/story-rules.md` and this file in sync with the change.
 
 ## Imported context
 
 @.claude/story-rules.md
-
-@.claude/JOURNAL.md
