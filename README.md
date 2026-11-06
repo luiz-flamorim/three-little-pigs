@@ -66,7 +66,7 @@ You need [Claude Code](https://claude.com/claude-code) and [Python 3](https://ww
 
 Want more? Ask Claude to **continue the story** (for example, "continue the magic bean"). The next chapter picks up from the last cliffhanger, keeps the title as Part II, and the chaos from before can come back.
 
-Try the sample first: [outputs/2026-10-23-3-pigs-and-the-magic-bean/index.html](outputs/2026-10-23-3-pigs-and-the-magic-bean/index.html).
+Try the sample first: [see it live](https://luiz-flamorim.github.io/three-little-pigs/outputs/2026-10-23-3-pigs-and-the-magic-bean/), or open `outputs/2026-10-23-3-pigs-and-the-magic-bean/index.html` in your clone.
 
 ### What you get
 
@@ -85,7 +85,7 @@ outputs/2026-10-23-3-pigs-and-the-magic-bean/
 
 ### Which file to open or share
 
-- **Share file** (named after the story, e.g. [the-three-pigs-and-the-magic-bean.html](outputs/2026-10-23-3-pigs-and-the-magic-bean/the-three-pigs-and-the-magic-bean.html)): one file with the whole production inside. Send this one; it opens in any browser.
+- **Share file** (named after the story, e.g. [the-three-pigs-and-the-magic-bean.html](https://luiz-flamorim.github.io/three-little-pigs/outputs/2026-10-23-3-pigs-and-the-magic-bean/the-three-pigs-and-the-magic-bean.html)): one file with the whole production inside. Send this one; it opens in any browser.
 - **`comic.html`**: also one file on its own, with just the comic.
 - **`index.html`**: links to the files around it, so it only works inside the production folder. Use it to browse on your own computer.
 
