@@ -37,13 +37,13 @@ for kind in ("straw", "sticks", "bricks"):
         w, h = 330 * k, 380 * k
         body = pig(pen, w / 2 + (20 * k if pose == "run" else 0), h - 36 * k, kind, expr, pose=pose)
         open(os.path.join(poses_dir, f"{kind}-pig-{pose}.svg"), "w").write(pen.svg(body, round(w), round(h)))
-WOLF_EXPR = {"stand": "snarl", "sneak": "grin", "huff": "huff", "pounce": "roar", "knock": "grin", "climb": "grin"}
+WOLF_EXPR = {"stand": "snarl", "sneak": "grin", "huff": "huff", "pounce": "roar", "knock": "grin", "climb": "grin", "hold": "grin"}
 for pose in WOLF_POSES:
     if pose == "pounce":
         w, h, x0 = 620, 500, 290
     else:
         w, h, x0 = 470, 450, 240
-    body = wolf(pen, x0, h - 16, WOLF_EXPR[pose], pose=pose)
+    body = wolf(pen, x0, h - 16, WOLF_EXPR.get(pose, "grin"), pose=pose)
     open(os.path.join(poses_dir, f"wolf-{pose}.svg"), "w").write(pen.svg(body, w, h))
 
 print(out)

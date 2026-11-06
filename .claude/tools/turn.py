@@ -3,6 +3,9 @@
                                                with its story.md; prints the story file's path, then the final title.
                                                If a production with the same name exists, this one becomes
                                                Part II, Part III... in both the folder name and the title.
+  turn.py new --continue PRODUCTION            start the next chapter of an earlier story: same title, so it becomes
+                                               Part II, III...; its story.md records which production it continues.
+  turn.py recap PRODUCTION                     print what the next chapter needs: title, chaos elements, summary, cliffhanger.
   turn.py add FILE "Speaker" [--chaos "what"]  read a turn from stdin, check its length, append it,
                                                then roll the chaos die for the next turn.
                                                Pass --chaos when this turn was a CHAOS turn, to record it first.
@@ -54,6 +57,26 @@ def production_name(title):
     return "3-pigs-and-" + slugify(rest)
 
 
+def read_header(stem):
+    """Title, the production it continues (or None), its parts and its summary, from outputs/<stem>/story.md."""
+    text = open(os.path.join(OUTPUTS, stem, "story.md")).read()
+    title = re.search(r"^# (.+)$", text, re.M).group(1).strip()
+    cont = re.search(r"^Continues: (\S+)$", text, re.M)
+    parts = re.findall(r"^\*\*(.+?):\*\* (.*)$", text, re.M)
+    return title, (cont.group(1) if cont else None), [p for p in parts if p[0] != "Summary"], next((t for s_, t in parts if s_ == "Summary"), "")
+
+
+def carried_chaos(stem):
+    """Chaos elements from the earlier chapters this story continues: they may come back without counting as new."""
+    out, seen = [], set()
+    _, prev, _, _ = read_header(stem)
+    while prev and prev not in seen and os.path.exists(os.path.join(OUTPUTS, prev, "story.md")):
+        seen.add(prev)
+        out += [e for e in story_chaos(prev) if not e.startswith("twist: ")]
+        prev = read_header(prev)[1]
+    return out
+
+
 def stem_of(path):
     """The production a story file belongs to: its folder name (every story file is called story.md)."""
     base = os.path.splitext(os.path.basename(path))[0]
@@ -61,8 +84,20 @@ def stem_of(path):
 
 
 cmd = sys.argv[1]
+if cmd == "recap":
+    stem = os.path.basename(sys.argv[2].rstrip("/"))
+    title, _, parts, summary = read_header(stem)
+    print(f"title: {re.sub(r', Part [IVXLCDM]+$', '', title)}")
+    print(f"chaos elements: {'; '.join(e for e in story_chaos(stem) + carried_chaos(stem) if not e.startswith('twist: ')) or 'none'}")
+    print(f"summary: {summary or '(none)'}")
+    print(f"cliffhanger: {parts[-1][1] if parts else '(none)'}")
+    sys.exit(0)
 if cmd == "new":
     now = datetime.now()
+    cont = None
+    if sys.argv[2] == "--continue":
+        cont = os.path.basename(sys.argv[3].rstrip("/"))
+        sys.argv[2] = re.sub(r", Part [IVXLCDM]+$", "", read_header(cont)[0])
     title = sys.argv[2].strip()
     name = production_name(title)
     # verification loop: the same story name already used (on any date) makes this one Part II, III...
@@ -80,7 +115,7 @@ if cmd == "new":
         title = re.sub(r", Part [IVXLCDM]+$", "", title) + f", Part {roman(part)}"
     os.makedirs(folder)
     path = f"{folder}/story.md"
-    open(path, "w").write(f"# {title}\n\n{now:%Y-%m-%d, %H:%M}\n")
+    open(path, "w").write(f"# {title}\n\n{now:%Y-%m-%d, %H:%M}\n" + (f"\nContinues: {cont}\n" if cont else ""))
     print(path)
     print(f"title: {title}")
 elif cmd == "add":
@@ -100,7 +135,8 @@ elif cmd == "add":
     story = open(path).read()
     parts = story.count("\n**") - story.count("\n**Summary:**")
     if speaker == "Summary":
-        sys.exit(f"saved, {len(text)}/{limit} characters, summary (story has {parts} parts)")
+        print(f"saved, {len(text)}/{limit} characters, summary (story has {parts} parts)")
+        sys.exit(0)
     print(f"saved, {len(text)}/{limit} characters, part {parts}")
     used = story_chaos(stem)
     if len(used) >= MAX_CHAOS:
@@ -116,3 +152,6 @@ elif cmd == "add":
         else:
             print(f"next turn: CHAOS twist (roll 1, event {len(used) + 1} of {MAX_CHAOS}). "
                   f"Use only what is already in the story, such as: {used[0]}")
+        carried = carried_chaos(stem)
+        if roll == 1 and carried:
+            print(f"from earlier chapters, already in the story (not new, may come back): {'; '.join(carried)}")

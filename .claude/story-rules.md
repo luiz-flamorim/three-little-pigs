@@ -53,6 +53,10 @@ To keep stories surprising, the game runner rolls a real die after each saved tu
 - The runner tells the player which elements were used in recent stories, so it picks something fresh.
 - Everyone else accepts the chaos (yes-and), and the Storyteller may add a short line to fold it in.
 
+## Next chapters
+
+A story can continue an earlier one. The next chapter keeps the title (Part II, Part III...), and the Storyteller opens it by picking up the last cliffhanger. Chaos elements from earlier chapters are already part of the story: anyone may use them, and they do not count as the one new element.
+
 ## The story file
 
 Each story gets its own production folder, `outputs/YYYY-MM-DD-3-pigs-and-<name>/`, named by the date and the story's title (a title used before becomes Part II, Part III...). The story is saved there as `story.md`: every part is its own paragraph, starting with the speaker's bolded name and a colon (for example `**Wolf:** …`), in order. The game runner writes this file; story agents never write or edit files.

@@ -1,4 +1,4 @@
-"""Scenery for comic panels: the three houses, trees, bushes, clouds and a beanstalk.
+"""Scenery for comic panels: the three houses, trees, bushes, clouds, a beanstalk, a pond and a treasure map.
 Each function returns SVG; outlines at the pen's main weight, inside details thin.
 """
 import math
@@ -142,3 +142,49 @@ def brick_wall(pen, x, base, w, rows=3, row_h=14):
 def speed_lines(pen, x, y, length=40, gap=14, n=3, angle=0):
     a = math.radians(angle); ux, uy = math.cos(a), math.sin(a); nx, ny = -uy, ux
     return pen.thin("".join(f"M{x + nx * gap * i:.1f} {y + ny * gap * i:.1f} l{ux * length * (1 - 0.2 * (i % 2)):.1f} {uy * length * (1 - 0.2 * (i % 2)):.1f} " for i in range(n)))
+
+
+def pond(pen, cx, cy, rx, ry=None, reeds=True):
+    """A small pond seen in perspective: a flat ellipse with ripple lines and a few reeds."""
+    from mono import ellipse
+    ry = ry if ry is not None else rx * 0.28
+    rip = "".join(f"M{cx + rx * dx - rx * w:.1f} {cy + ry * dy:.1f} Q{cx + rx * dx:.1f} {cy + ry * dy - ry * 0.18:.1f} {cx + rx * dx + rx * w:.1f} {cy + ry * dy:.1f} "
+                  for dx, dy, w in ((-0.25, -0.15, 0.22), (0.2, 0.25, 0.26), (0.35, -0.3, 0.14)))
+    s = pen.shape([ellipse(cx, cy, rx, ry)], pen.thin(rip))
+    if reeds:
+        x0, y0 = cx - rx * 0.92, cy - ry * 0.1
+        s += pen.line(f"M{x0:.1f} {y0:.1f} q-4 {-ry * 0.9:.1f} -10 {-ry * 1.4:.1f} M{x0 + 8:.1f} {y0 + 2:.1f} q2 {-ry * 1.1:.1f} 4 {-ry * 1.7:.1f} M{x0 + 16:.1f} {y0 + 4:.1f} q6 {-ry * 0.8:.1f} 12 {-ry * 1.2:.1f}", halo=True)
+    return s
+
+
+def treasure_map(pen, cx, cy, w, angle=0, upside_down=False, marks=((0.28, -0.12),), wet=False):
+    """A pirate treasure map: a paper sheet with rolled ends, a dotted path, a pond and one X per mark.
+    marks: X positions as fractions of the sheet (from its centre, map the right way up).
+    upside_down: the drawing on the sheet is turned over (the pond ends up at the top)."""
+    h = w * 0.66
+    x0, x1, y0, y1 = -w / 2, w / 2, -h / 2, h / 2
+    r = h * 0.09
+    sheet = (f"M{x0 + r:.1f} {y0:.1f} H{x1 - r:.1f} A{r:.1f} {r:.1f} 0 0 1 {x1 - r:.1f} {y0 + 2 * r:.1f} "
+             f"M{x1 - r:.1f} {y0:.1f} V{y1:.1f} H{x0 + r:.1f} V{y0:.1f} Z")
+    rolls = [f"M{x0 + r:.1f} {y0:.1f} A{r:.1f} {r:.1f} 0 0 0 {x0 + r:.1f} {y0 + 2 * r:.1f} V{y1:.1f} A{r:.1f} {r:.1f} 0 0 1 {x0 + r:.1f} {y1 - 2 * r:.1f}"]
+    k = -1 if upside_down else 1
+    P = lambda fx, fy: (k * fx * w, k * fy * h)
+    d = ""
+    path = [(-0.32, 0.3), (-0.18, 0.1), (-0.02, 0.2), (0.12, 0.02), (0.28, -0.12)]
+    for (ax, ay), (bx, by) in zip(path, path[1:]):
+        for t in (0.2, 0.5, 0.8):
+            px, py = P(ax + (bx - ax) * t, ay + (by - ay) * t)
+            d += f"M{px:.1f} {py:.1f} h0.1 "
+    pdx, pdy = P(-0.2, -0.22)
+    d += f"M{pdx - w * 0.12:.1f} {pdy:.1f} Q{pdx:.1f} {pdy - h * 0.16:.1f} {pdx + w * 0.12:.1f} {pdy:.1f} Q{pdx:.1f} {pdy + h * 0.16:.1f} {pdx - w * 0.12:.1f} {pdy:.1f} Z "
+    xs = ""
+    for fx, fy in marks:
+        mx, my = P(fx, fy); s_ = w * 0.05
+        xs += f"M{mx - s_:.1f} {my - s_:.1f} L{mx + s_:.1f} {my + s_:.1f} M{mx + s_:.1f} {my - s_:.1f} L{mx - s_:.1f} {my + s_:.1f} "
+    det = (f'<path d="{d}" fill="none" stroke="{pen.ink}" stroke-width="{pen.d * 1.8:.1f}" stroke-linecap="round"/>'
+           + pen.thin(f"M{pdx - w * 0.04:.1f} {pdy:.1f} q{w * 0.04:.1f} {-h * 0.04:.1f} {w * 0.08:.1f} 0")
+           + pen.line(xs, halo=True))
+    if wet:
+        det += pen.thin("".join(f"M{x0 + w * f:.1f} {y1 + 8:.1f} q-5 10 0 13 q5 -3 0 -13 Z " for f in (0.2, 0.5, 0.78)))
+    out = pen.shape([sheet] + rolls, pen.thin(f"M{x0 + r:.1f} {y0 + 2 * r:.1f} V{y1 - 2 * r:.1f}") + det)
+    return f'<g transform="translate({cx} {cy}) rotate({angle})">{out}</g>'

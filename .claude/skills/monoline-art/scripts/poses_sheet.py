@@ -18,5 +18,6 @@ s.append('<path d="M60 490 H1400" stroke="#141b26" stroke-width="1.5" opacity="0
 for i, (pose, expr) in enumerate([("stand", "snarl"), ("sneak", "grin"), ("huff", "huff"), ("knock", "grin")]):
     x = 230 + i * 340
     s += [wolf(pen, x, 920, expr, 0.85, pose=pose), L(x, 965, pose.upper())]
-s += [wolf(pen, 700, 1380, "roar", 0.85, pose="pounce"), L(700, 1425, "POUNCE")]
+for x, pose, expr in ((260, "climb", "grin"), (700, "pounce", "roar"), (1180, "hold", "grin")):
+    s += [wolf(pen, x, 1380, expr, 0.85, pose=pose), L(x, 1425, pose.upper())]
 open(sys.argv[1] if len(sys.argv) > 1 else "poses-sheet.svg", "w").write(pen.svg("".join(s), W, H))

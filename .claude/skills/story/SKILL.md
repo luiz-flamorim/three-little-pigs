@@ -1,6 +1,6 @@
 ---
 name: story
-description: Run only the story step of the Three Little Pigs machine — the agent cast (Storyteller, Straw Pig, Sticks Pig, Bricks Pig, Wolf) improvises a new story, with the main session as game runner calling each agent, saving every part with turn.py, rolling chaos and printing the story live. Use it when the user asks for just the story, without the comic, or types /story; for "tell me a story" and the full production, use the tell-me-a-story skill, which runs this one first.
+description: Run only the story step of the Three Little Pigs machine — the agent cast (Storyteller, Straw Pig, Sticks Pig, Bricks Pig, Wolf) improvises a new story or the next chapter of an earlier one, with the main session as game runner calling each agent, saving every part with turn.py, rolling chaos and printing the story live. Use it when the user asks for just the story, without the comic, or types /story; for "tell me a story" and the full production, use the tell-me-a-story skill, which runs this one first.
 ---
 
 **First rule:** never go outside this project folder (`3 Little Pigs - A`). Do not look at, read, copy, change or delete anything outside it. Put temporary files in `tmp/` and delete them when you are done. The rules in `.claude/story-rules.md` apply to every story.
@@ -20,6 +20,16 @@ python3 .claude/tools/turn.py new "The Three Pigs and the <Something>"
 ```
 
 This creates the story's production folder, `outputs/YYYY-MM-DD-3-pigs-and-<name>/`, named by today's date and the title, with the story in `story.md`. It prints the story file's path, then the final title. Every folder of one production holds everything made from that story (later, the comic too). If a story with the same name already exists, `turn.py` makes this one Part II, Part III and so on, in both the folder name and the title; use the title it prints. The Storyteller's title should read "The Three Pigs and the <something>"; if it does not, ask it once for a title in that form before creating the folder. Save the opening line as the first part (step 2).
+
+## 1b. Or continue an earlier story
+
+If the user asks to continue a story ("continue the last story", "what happens next in the magic bean"), make the next chapter instead of a new story. Use the production they name, or else the newest folder in `outputs/` with a finished `story.md`.
+
+- Run `python3 .claude/tools/turn.py recap <production>`. It prints the title, the chaos elements already in the story, the summary and the cliffhanger.
+- Create the file with `python3 .claude/tools/turn.py new --continue <production>`. It keeps the title, adds Part II, III..., and records which production this one continues.
+- In the Storyteller's first message, say this is the next chapter, paste the recap, and ask it to open by picking up the cliffhanger, with no `Title:` line.
+- In every player's first message, paste the recap too, so they know what happened before.
+- The chaos elements from earlier chapters are already part of the story: anyone may use them, and they do not count as the one new element. `turn.py` lists them on chaos turns; pass that on to the chaos player.
 
 ## 2. Save each turn
 
